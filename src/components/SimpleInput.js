@@ -1,13 +1,15 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 const SimpleInput = (props) => {
-  const nameInputRef = useRef();
   const [enteredName, setEnteredName] = useState("");
-  const [enteredNameIsValid, setEnteredNameIsValid] = useState(false);
   const [nameEnterStarted, setNameEnterStarted] = useState(false);
 
   const nameInputChangeHandler = (event) => {
     setEnteredName(event.target.value);
+  };
+
+  const nameInputBlurHandler = (event) => {
+    setNameEnterStarted(true);
   };
 
   const formSubmissionHandler = (event) => {
@@ -15,21 +17,14 @@ const SimpleInput = (props) => {
     setNameEnterStarted(true);
 
     if (enteredName.trim() === "") {
-      setEnteredNameIsValid(false);
       return;
     }
 
-    setEnteredNameIsValid(true);
-
-    console.log(enteredName);
-
-    console.log(nameInputRef.current.value);
-
-    // nameInputRef.current.value = ''; => NOT IDEAL, DON'T MANIPULATE THE DOM
     setEnteredName("");
+    setNameEnterStarted(false);
   };
 
-  const nameFieldIsValid = !nameEnterStarted || enteredNameIsValid;
+  const nameFieldIsValid = !nameEnterStarted || enteredName.trim() !== "";
 
   const nameInputClasses = nameFieldIsValid
     ? "form-control"
@@ -43,6 +38,7 @@ const SimpleInput = (props) => {
           type="text"
           id="name"
           onChange={nameInputChangeHandler}
+          onBlur={nameInputBlurHandler}
           value={enteredName}
         />
         {!nameFieldIsValid && (
