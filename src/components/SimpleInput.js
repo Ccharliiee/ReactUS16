@@ -1,57 +1,86 @@
-import React, { useState } from "react";
+import React from "react";
 import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
+import useInput from "../hooks/useInput";
+import * as EmailValidator from "email-validator";
 
 const SimpleInput = (props) => {
-  const [enteredName, setEnteredName] = useState("");
-  const [nameEnterStarted, setNameEnterStarted] = useState(false);
+  const {
+    value: enteredName,
+    isValid: enteredNameIsValid,
+    hasError: nameInputHasError,
+    valueChangeHandler: nameChangedHandler,
+    inputBlurHandler: nameBlurHandler,
+    reset: resetNameInput,
+  } = useInput((name) => name.trim() !== "");
 
-  const nameInputChangeHandler = (event) => {
-    setEnteredName(event.target.value);
-  };
-
-  const nameInputBlurHandler = (event) => {
-    setNameEnterStarted(true);
-  };
+  const {
+    value: enteredEmail,
+    isValid: enteredEmailIsValid,
+    hasError: emailInputHasError,
+    valueChangeHandler: emailChangedHandler,
+    inputBlurHandler: emailBlurHandler,
+    reset: resetEmailInput,
+  } = useInput((email) => EmailValidator.validate(email));
 
   const formSubmissionHandler = (event) => {
-    console.log("disabled");
     event.preventDefault();
-    setNameEnterStarted(true);
-
-    if (enteredName.trim() === "") {
-      return;
+    if (fvalid4Sub) {
+      resetNameInput();
+      resetEmailInput();
     }
-
-    setEnteredName("");
-    setNameEnterStarted(false);
   };
 
-  const nameFieldIsValid = !nameEnterStarted || enteredName.trim() !== "";
-  const fvalid4Sub = enteredName.trim() !== "";
-
-  const nameInputClasses = nameFieldIsValid
-    ? "form-control"
-    : "form-control invalid";
+  const fvalid4Sub = enteredNameIsValid && enteredEmailIsValid;
 
   return (
-    <form onSubmit={formSubmissionHandler}>
-      <div className={nameInputClasses}>
+    <Form className="mb-3" onSubmit={formSubmissionHandler}>
+      <div
+        className={nameInputHasError ? "form-control invalid" : "form-control "}
+      >
         <label htmlFor="name">Your Name</label>
         <input
+          className="mb-3"
           type="text"
           id="name"
-          onChange={nameInputChangeHandler}
-          onBlur={nameInputBlurHandler}
+          onChange={nameChangedHandler}
+          emailInputChangeHandler
+          onBlur={nameBlurHandler}
           value={enteredName}
         />
-        {!nameFieldIsValid && (
+        {nameInputHasError && (
           <p className="error-text">Name must not be empty.</p>
         )}
       </div>
+
+      <Form.Group
+        className={
+          emailInputHasError ? "form-control invalid mb-3" : "form-control mb-3"
+        }
+        controlId="formBasicEmail"
+      >
+        <Form.Label>Email address</Form.Label>
+        <Form.Control
+          type="email"
+          placeholder="Enter email"
+          onChange={emailChangedHandler}
+          onBlur={emailBlurHandler}
+          value={enteredEmail}
+        />
+        {emailInputHasError && (
+          <p className="error-text">Email must be valid.</p>
+        )}
+        <Form.Text className="text-muted">
+          We'll never share your email with anyone else.
+        </Form.Text>
+      </Form.Group>
+
       <div className="form-actions">
-        <Button disabled={!fvalid4Sub}>Submit</Button>
+        <Button type="submit" disabled={!fvalid4Sub}>
+          Submit
+        </Button>
       </div>
-    </form>
+    </Form>
   );
 };
 
