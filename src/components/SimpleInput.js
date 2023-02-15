@@ -44,7 +44,6 @@ const SimpleInput = (props) => {
           type="text"
           id="name"
           onChange={nameChangedHandler}
-          emailInputChangeHandler
           onBlur={nameBlurHandler}
           value={enteredName}
         />
