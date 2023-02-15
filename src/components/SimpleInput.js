@@ -1,4 +1,5 @@
-import { useState } from "react";
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 
 const SimpleInput = (props) => {
   const [enteredName, setEnteredName] = useState("");
@@ -13,6 +14,7 @@ const SimpleInput = (props) => {
   };
 
   const formSubmissionHandler = (event) => {
+    console.log("disabled");
     event.preventDefault();
     setNameEnterStarted(true);
 
@@ -25,6 +27,7 @@ const SimpleInput = (props) => {
   };
 
   const nameFieldIsValid = !nameEnterStarted || enteredName.trim() !== "";
+  const fvalid4Sub = enteredName.trim() !== "";
 
   const nameInputClasses = nameFieldIsValid
     ? "form-control"
@@ -46,7 +49,7 @@ const SimpleInput = (props) => {
         )}
       </div>
       <div className="form-actions">
-        <button>Submit</button>
+        <Button disabled={!fvalid4Sub}>Submit</Button>
       </div>
     </form>
   );
